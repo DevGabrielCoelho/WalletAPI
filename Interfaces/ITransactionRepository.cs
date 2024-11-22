@@ -18,5 +18,6 @@ namespace WalletApi.Interfaces
         Task<AccountDto> GetToAcoByTransferIdAsync(string id);
         Task<AccountDto> GetFromAcoByTransferIdAsync(string id);
         Transaction AddIp(Transaction transaction);
+        Task<Transaction> AddGeo(Transaction transaction);
     }
 }

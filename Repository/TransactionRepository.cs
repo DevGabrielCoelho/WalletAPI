@@ -13,10 +13,12 @@ namespace WalletApi.Repository
 {
     public class TransactionRepository : ITransactionRepository
     {
+        private readonly IGeolocalizationService _geolocalizationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ApplicationDBContext _context;
-        public TransactionRepository(ApplicationDBContext applicationDBContext, IHttpContextAccessor httpContextAccessor)
+        public TransactionRepository(ApplicationDBContext applicationDBContext, IHttpContextAccessor httpContextAccessor, IGeolocalizationService geolocalizationService)
         {
+            _geolocalizationService = geolocalizationService;
             _httpContextAccessor = httpContextAccessor;
             _context = applicationDBContext;
         }
@@ -29,9 +31,19 @@ namespace WalletApi.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Transaction> AddGeo(Transaction transaction)
+        {
+            if (transaction.SenderIp == null){
+                throw new InvalidOperationException("Ip not found!");
+            }
+            var geo = await _geolocalizationService.ObterLocalizacaoPorIp(transaction.SenderIp);
+            transaction.Geolocation = geo;
+            return transaction;
+        }
+
         public Transaction AddIp(Transaction transaction)
         {
-            var ipAddres = _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+            var ipAddres = _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString().Split(':')[3];
             transaction.SenderIp = ipAddres;
             return transaction;
         }
@@ -50,7 +62,7 @@ namespace WalletApi.Repository
                 throw new InvalidOperationException("The Transactions DbSet is not initialized.");
             var transaction = await _context.Transactions.FirstOrDefaultAsync(x => x.Id == id);
             if (transaction == null)
-                 throw new InvalidOperationException($"Transaction with ID {id} not found.");
+                throw new InvalidOperationException($"Transaction with ID {id} not found.");
             return transaction.ToTransactionDto();
         }
 
@@ -119,7 +131,7 @@ namespace WalletApi.Repository
             if (transaction.Status != transactionAlt.Status)
             {
                 if (_context.Transactions == null)
-                   throw new InvalidOperationException("The Transactions DbSet is not initialized.");
+                    throw new InvalidOperationException("The Transactions DbSet is not initialized.");
                 await _context.Transactions.Where(x => x.Id == transaction.Id).ExecuteUpdateAsync(x => x
                     .SetProperty(x => x.Status, transactionAlt.Status)
                 );

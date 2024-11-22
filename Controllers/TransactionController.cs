@@ -76,6 +76,7 @@ namespace WalletApi.Controllers
                 Value = value
             };
             transaction = _transactionRepository.AddIp(transaction);
+            transaction = await _transactionRepository.AddGeo(transaction);
 
             if (transaction.ToAccountId == null)
                 throw new Exception();
