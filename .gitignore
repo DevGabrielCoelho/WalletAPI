@@ -7,6 +7,7 @@
 *.sln.docstates
 appsettings.json
 PasswordHasher.cs
+commits.txt
 .vscode/
 
 # Build results
