@@ -7,7 +7,7 @@
 *.sln.docstates
 appsettings.json
 PasswordHasher.cs
-Controllers/Seeding.cs
+
 commits.txt
 .vscode/
 
