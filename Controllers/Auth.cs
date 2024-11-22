@@ -48,6 +48,10 @@ namespace WalletApi.Controllers
                 user.SessionToken = _tokenService.CreateToken(user);
             }
 
+            if(!testPass){
+                throw new InvalidOperationException("Error!");
+            }
+
             if (user.SessionToken == null)
                 throw new InvalidOperationException("Failed to generate a session token for the user.");
             await _userRepository.UpdateToken(user, user.SessionToken);

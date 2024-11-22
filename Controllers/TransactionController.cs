@@ -43,7 +43,7 @@ namespace WalletApi.Controllers
                 }
         */
         [HttpPost("transfer/")]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> Transfer([FromQuery] string toAccountId, [FromQuery] string fromAccountId, [FromQuery] decimal value, [FromQuery] string token)
         {
             if (!ModelState.IsValid)
