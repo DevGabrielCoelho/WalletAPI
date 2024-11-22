@@ -22,7 +22,19 @@ namespace WalletApi.Repository
         {
             if (_context.Refundings == null)
                 throw new InvalidOperationException("The Refundings DbSet is not initialized.");
+            await _context.Refundings.AddAsync(refunding);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> ExistRefundingAsync(string id)
+        {
+            if (_context == null)
+                throw new Exception("Context is not initialized");
+
+            if(_context.Transactions == null)
+                throw new Exception("Transaction is not initialized");
+                
+            return await _context.Transactions.Include(x => x.Refunding).FirstOrDefaultAsync(x => x.Id == id) != null;
         }
 
         public async Task<List<RefundingDto>> GetAllDtoAsync()

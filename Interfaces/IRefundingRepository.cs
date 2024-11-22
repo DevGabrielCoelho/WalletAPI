@@ -15,5 +15,6 @@ namespace WalletApi.Interfaces
         Task<Refunding> GetByTransactionIdAsync(string id);
         Task AddAsync(Refunding refunding);
         Task<TransactionDto> GetTransferByRefundingIdAsync(string id);
+        Task<bool> ExistRefundingAsync(string id);
     }
 }

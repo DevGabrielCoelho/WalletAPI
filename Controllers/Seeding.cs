@@ -1,95 +1,123 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Diagnostics;
-// using System.Linq;
-// using System.Threading.Tasks;
-// using Microsoft.AspNetCore.Mvc;
-// using Microsoft.EntityFrameworkCore;
-// using Microsoft.Extensions.Logging;
-// using WalletApi.Data;
-// using WalletApi.Models;
 
-// namespace WalletApi.Controllers
-// {
-//     [ApiController]
-//     [Route("api/seeding")]
-//     public class Seeding : ControllerBase
-//     {
-//         private readonly ApplicationDBContext _context;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using WalletApi.Data;
+using WalletApi.Enums;
+using WalletApi.Models;
 
-//         public Seeding(ILogger<Seeding> logger, ApplicationDBContext applicationDBContext)
-//         {
-//             _context = applicationDBContext;
-//         }
+namespace WalletApi.Controllers
+{
+  [ApiController]
+  [Route("api/seeding")]
+  public class Seeding : ControllerBase
+  {
+    private readonly ApplicationDBContext _context;
+    public Seeding(ApplicationDBContext applicationDBContext)
+    {
+      _context = applicationDBContext;
+    }
+    
+    [HttpPost("Seed")]
+        public IActionResult SeedData()
+        {
+            if(_context == null)
+              throw new Exception("Db is not initialized");
+            
+            if(_context.Users == null)
+              throw new Exception("Users is not initialized");
+            if(_context.Accounts == null)
+              throw new Exception("Accounts is not initialized");
+            if(_context.Transactions == null)
+              throw new Exception("Transactions is not initialized");
+            if(_context.Refundings == null)
+              throw new Exception("Refundings is not initialized");
 
-//         [HttpPost("seeder")]
-//         public async Task<IActionResult> Seedings()
-//         {
-//             User user = new();
-//             User user2 = new();
-//             Account account = new();
-//             Account account2 = new();
-//             user.Account = account;
-//             user.AccountId = account.Id;
-//             user2.Account = account2;
-//             user2.AccountId = account2.Id;
-//             account.User = user;
-//             account.UserId = user.Id;
-//             account2.User = user2;
-//             account2.UserId = user2.Id;
+            if (_context.Users.Any())
+            {
+                return BadRequest("Database already contains data.");
+            }
+
+            var user1 = new User
+            {
+                Name = "Rodrigo Thiago",
+                Document = "12345678900",
+                Birthday = new DateTime(1995, 5, 20),
+                Email = "rodrigo@example.com",
+                Phone = "123456789",
+                PasswordHash = "hashed_password_1"
+            };
+
+            var user2 = new User
+            {
+                Name = "Maria Silva",
+                Document = "98765432100",
+                Birthday = new DateTime(1990, 10, 15),
+                Email = "maria@example.com",
+                Phone = "987654321",
+                PasswordHash = "hashed_password_2"
+            };
+
+            _context.Users.AddRange(user1, user2);
+
+            var account1 = new Account
+            {
+                UserId = user1.Id,
+                Balance = 1000.50M,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            var account2 = new Account
+            {
+                UserId = user2.Id,
+                Balance = 250.75M,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
 
 
-//             Transaction transaction = new();
-//             transaction.ToAccount = account;
-//             transaction.ToAccountId = account.Id;
-//             transaction.FromAccount = account2;
-//             transaction.FromAccountId = account2.Id;
 
-//             Refunding refunding = new();
-//             refunding.Transaction = transaction;
-//             refunding.TransactionId = transaction.Id;
+            _context.Accounts.AddRange(account1, account2);
 
-//             transaction.Refunding = refunding;
-//             transaction.RefundingId = refunding.Id;
+            user1.AccountId = account1.Id;
+            user2.AccountId = account2.Id;
 
-//             account.IncomingTransactions.Add(transaction);
-//             account2.OutgoingTransactions.Add(transaction);
+            var transaction1 = new Transaction
+            {
+                FromAccountId = account1.Id,
+                ToAccountId = account2.Id,
+                Value = 200.00M,
+                Status = TransactionStatus.Completed,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
 
-//             _context.Users.Add(user);
-//             _context.Users.Add(user2);
-//             _context.Accounts.Add(account);
-//             _context.Accounts.Add(account2);
-//             _context.Transactions.Add(transaction);
-//             _context.Refundings.Add(refunding);
-//             await _context.SaveChangesAsync();
+            var transaction2 = new Transaction
+            {
+                FromAccountId = account2.Id,
+                ToAccountId = account1.Id,
+                Value = 50.00M,
+                Status = TransactionStatus.Pending,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
 
-//             return Ok();
-//         }
+            _context.Transactions.AddRange(transaction1, transaction2);
 
-//         [HttpGet]
-//         public IActionResult GetAll()
-//         {
-//             string retorno = "Users:\n";
-//             foreach (User x in _context.Users) retorno += "  " + x.ToString() + "\n";
-//             retorno += "\nAccounts:\n";
-//             foreach (Account x in _context.Accounts) retorno += "  " + x.ToString() + "\n";
-//             retorno += "\nTransactions:\n";
-//             foreach (Transaction x in _context.Transactions) retorno += "  " + x.ToString() + "\n";
-//             retorno += "\nRefunding:\n";
-//             foreach (Refunding x in _context.Refundings) retorno += "  " + x.ToString() + "\n";
-//             return Ok(retorno);
-//         }
+            var refunding1 = new Refunding
+            {
+                TransactionId = transaction2.Id,
+                Description = "Refund for incorrect payment",
+                CreatedBy = "Admin",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
 
-//         [HttpDelete]
-//         public async Task<IActionResult> DropAll()
-//         {
-//             foreach (Refunding x in _context.Refundings) _context.Refundings.Remove(x);
-//             foreach (Transaction x in _context.Transactions) _context.Transactions.Remove(x);
-//             foreach (Account x in _context.Accounts) _context.Accounts.Remove(x);
-//             foreach (User x in _context.Users) _context.Users.Remove(x);
+            _context.Refundings.Add(refunding1);
 
-//             return Ok(await _context.SaveChangesAsync());
-//         }
+            _context.SaveChanges();
 
-//     }
-// }
+            return Ok("Seed data added successfully.");
+        }
+  }
+}

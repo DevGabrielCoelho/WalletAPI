@@ -48,6 +48,9 @@ namespace WalletApi.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest();
+            
+            if (value <= 0)
+                return BadRequest("Invalid Transaction Value!");
 
             if (!(await _accountRepository.ValidationToken(toAccountId, token)))
             {
@@ -90,7 +93,7 @@ namespace WalletApi.Controllers
                 {
                     CreatedAt = timenow,
                     CreatedBy = toAccount.Id,
-                    Description = "No Money",
+                    Description = "Insufficient Balance",
                     Id = Guid.NewGuid().ToString(),
                     Transaction = transaction,
                     TransactionId = transaction.Id,

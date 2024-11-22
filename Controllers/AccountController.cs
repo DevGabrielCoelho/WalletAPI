@@ -55,7 +55,8 @@ namespace WalletApi.Controllers
                 return BadRequest("The provided model state is invalid.");
 
             var tokenValid = await _accountRepository.ValidationToken(id, token);
-            if(!tokenValid){
+            if (!tokenValid)
+            {
                 return Unauthorized("Token validation failed or is invalid.");
             }
 
@@ -63,7 +64,10 @@ namespace WalletApi.Controllers
             if (accountDto == null)
                 throw new InvalidOperationException("Account not found for the given ID.");
 
-            return Ok(accountDto.Balance);
+            return Ok(new
+            {
+                balance = accountDto.Balance
+            });
         }
     }
 }

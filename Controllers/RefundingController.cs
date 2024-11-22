@@ -49,8 +49,7 @@ namespace WalletApi.Controllers
                 return Unauthorized();
             }
 
-            var existingRefunding = await _refundingRepository.GetByTransactionIdAsync(transactionId);
-            if (existingRefunding != null)
+            if (!await _refundingRepository.ExistRefundingAsync(transactionId))
             {
                 return Conflict("A refunding already exists for this transaction.");
             }
@@ -85,7 +84,7 @@ namespace WalletApi.Controllers
                 TransactionId = transaction.Id,
                 UpdatedAt = datenow
             });
-
+            
             var refunding = await _refundingRepository.GetByTransactionIdAsync(transactionId);
 
 
