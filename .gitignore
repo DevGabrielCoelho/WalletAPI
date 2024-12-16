@@ -5,6 +5,7 @@
 *.suo
 *.user
 *.sln.docstates
+.env
 appsettings.json
 PasswordHasher.cs
 Controllers/Seeding.cs

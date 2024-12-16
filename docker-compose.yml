@@ -1,12 +1,44 @@
-# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
-
-version: '3.4'
+version: '3.8'
 
 services:
-  walletapi:
-    image: walletapi
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=${MSSQL_PID}
+      - SA_PASSWORD=${SA_PASSWORD}
+      - MSSQL_ENABLE_TLS=false
     ports:
-      - 5000:5000
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql/data
+      - mssql_log:/var/opt/mssql/log
+      - mssql_secrets:/var/opt/mssql/secrets
+    networks:
+      - app_network
+    user: "root"
+
+  aspnetcore:
+    build: .
+    ports:
+      - "5236:5236"
+    depends_on:
+      - mssql
+    networks:
+      - app_network
+    environment:
+      - ASPNETCORE_URLS=${URLS}
+      - Jwt__SigninKey=${SIGNIN_KEY}
+      - ConnectionStrings__DefaultConnection=${DEFAULT_CONNECTION}
+      - Jwt__Issuer=${ISSUER}
+      - Jwt__Audience=${AUDIENCE}
+    entrypoint: ["/init-db.sh"]
+
+volumes:
+  mssql_data:
+  mssql_log:
+  mssql_secrets:
+
+networks:
+  app_network:
+    driver: bridge
