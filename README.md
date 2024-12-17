@@ -36,16 +36,16 @@ Make sure you have the following tools installed on your machine before starting
 
    ALLOWED_HOSTS="*"
 
-   ISSUER="IssuerNameOrLink"
-   AUDIENCE="AudienceNameOrLink"
+   ISSUER="IssuerNameOrLink(recommended "http://localhost:5236")"
+   AUDIENCE="AudienceNameOrLink(recommended "http://localhost:5236")"
    SIGNIN_KEY="YourStrongSigninKey(recommended 128 characters)"
 
-   SALT_SIZE=IntSaltSize
-   KEY_SIZE=IntSaltSize
-   MEMORY_SIZE=IntMemorySize
-   ITERATIONS=IntIterations
-   DEGREE_OF_PARALLELISM=IntDegreeOfParallelism
-   DELIMITER="CharDelimiter"
+   SALT_SIZE=IntSaltSize(recommended 16)
+   KEY_SIZE=IntSaltSize(recommended 32)
+   MEMORY_SIZE=IntMemorySize(recommended 15360)
+   ITERATIONS=IntIterations(recommended 2)
+   DEGREE_OF_PARALLELISM=IntDegreeOfParallelism(recommended 1)
+   DELIMITER="CharDelimiter(recommended ";")"
 
    DOCKER_SA_PASSWORD="YourStrong!Passw0rd"
    DOCKER_MSSQL_PID="Developer"
