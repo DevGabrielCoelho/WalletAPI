@@ -14,7 +14,7 @@ namespace WalletApi.Interfaces
         Task<Account> GetByIdAccountAsync(string id);
         Task AddIncommingAsync(string id, Transaction transaction);
         Task AddoutcommingAsync(string id, Transaction transaction);
-        Task UpdateBalance(string id, decimal value, char op /*'a' || 's'*/);
+        Task UpdateBalance(string id, decimal value, char op);
         Task AddAsync(Account account);
         Task<List<Transaction>> GetAllInAsync(string id);
         Task<List<Transaction>> GetAllOutAsync(string id);

@@ -28,20 +28,7 @@ namespace WalletApi.Controllers
             _refundingRepository = refundingRepository;
             _transactionRepository = transactionRepository;
         }
-        /*
-                [HttpGet("getall")]
-                public async Task<IActionResult> GetAll()
-                {
-                    return Ok(await _transactionRepository.GetAllDtoAsync());
-                }
-
-                [HttpGet("getid/{id}")]
-                public async Task<IActionResult> GetById([FromRoute] string id)
-                {
-                    var x = await _transactionRepository.GetByIdDtoAsync(id);
-                    return Ok(await _transactionRepository.GetByIdDtoAsync(id));
-                }
-        */
+        
         [HttpPost("transfer/")]
         [Authorize]
         public async Task<IActionResult> Transfer([FromQuery] string toAccountId, [FromQuery] string fromAccountId, [FromQuery] decimal value, [FromQuery] string token)
@@ -121,25 +108,5 @@ namespace WalletApi.Controllers
             });
             return Ok();
         }
-        /*
-                [HttpGet("GetRefundingByTransferId/{id}")]
-                public async Task<IActionResult> GetRefundingByTransferId(string id)
-                {
-                    var x = await _transactionRepository.GetRefunByTransferIdAsync(id);
-                    return Ok(x);
-                }
-                [HttpGet("GetToAcoByTransferId/{id}")]
-                public async Task<IActionResult> GetToAcoByTransferId(string id)
-                {
-                    var x = await _transactionRepository.GetToAcoByTransferIdAsync(id);
-                    return Ok(x);
-                }
-                [HttpGet("GetFromAcoByTransferId/{id}")]
-                public async Task<IActionResult> GetFromAcoByTransferId(string id)
-                {
-                    var x = await _transactionRepository.GetFromAcoByTransferIdAsync(id);
-                    return Ok(x);
-                }
-        */
     }
 }

@@ -14,8 +14,7 @@ A digital wallet management API, enabling control of financial transactions, bal
 
 Make sure you have the following tools installed on your machine before starting:
 
-- **[.NET](https://dotnet.microsoft.com/pt-br/download)** (recommended version: 8.0.11 or higher)
-- **[SQL Server](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads)** or another compatible database.
+- **[Docker](https://www.docker.com/products/docker-desktop/)** (recommended latest version)
 
 ## 🚀 Installation and Setup
 
@@ -26,73 +25,48 @@ Make sure you have the following tools installed on your machine before starting
    cd WalletApi
    ```
 
-2. **Install dependencies (if necessary):**
-   Add the required packages to the project using the following commands:
+2. **Configure the environment file:**  
+    Create the `.env` file in the root of the project and add the following configurations (adjust as needed):
+
+   ```.env
+   DEFAULT_CONNECTION="Server=msql,1433;Database=WalletDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
+
+   LOGGING_LOG_LEVEL_DEFAULT="Information"
+   LOGGING_LOG_LEVEL_MICROSOFT_ASP_NET_CORE="Warning"
+
+   ALLOWED_HOSTS="*"
+
+   ISSUER="IssuerNameOrLink"
+   AUDIENCE="AudienceNameOrLink"
+   SIGNIN_KEY="YourStrongSigninKey(recommended 128 characters)"
+
+   SALT_SIZE=IntSaltSize
+   KEY_SIZE=IntSaltSize
+   MEMORY_SIZE=IntMemorySize
+   ITERATIONS=IntIterations
+   DEGREE_OF_PARALLELISM=IntDegreeOfParallelism
+   DELIMITER="CharDelimiter"
+
+   DOCKER_SA_PASSWORD="YourStrong!Passw0rd"
+   DOCKER_MSSQL_PID="Developer"
+
+   DOCKER_ASP_NET_CORE_PORT=5236:5236
+   DOCKER_MSQL_PORT=1433:1433
+
+   URLS=http://+:5236
+
+   SQLCMD_COMMAND=/opt/mssql-tools/bin/sqlcmd -S "mssql,1433" -U "sa" -P "YourStrong!Passw0rd" -Q "SELECT 1"
+   ```
+
+3. **Start Docker build:**
 
    ```bash
-   dotnet add package Konscious.Security.Cryptography.Argon2 --version 1.3.1
-   dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson --version 8.0.11
-   dotnet add package Microsoft.AspNetCore.OpenApi --version 8.0.10
-   dotnet add package Microsoft.EntityFrameworkCore.Design --version 9.0.0
-   dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 9.0.0
-   dotnet add package Microsoft.EntityFrameworkCore.Tools --version 9.0.0
-   dotnet add package Newtonsoft.Json --version 13.0.3
-   dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 8.0.11
+   docker-compose up -d --build
    ```
 
-3. **Configure the environment file:**  
-    Create the `appsettings.json` file in the root of the project and add the following configurations (adjust as needed):
-
-   ```json
-   {
-     "ConnectionStrings": {
-       "DefaultConnection": "your_connection_string"
-     },
-     "Logging": {
-       "LogLevel": {
-         "Default": "Information",
-         "Microsoft.AspNetCore": "Warning"
-       }
-     },
-     "AllowedHosts": "*",
-     "JWT": {
-       "Issuer": "your_issuer_route",
-       "Audience": "your_audience_route",
-       "SigninKey": "your_HS512_signin_key"
-     }
-   }
+4. Access the API at:
    ```
-
-4. **Create your Hashing structure:**
-   Create the `PasswordHasher.cs` file in the root of the project and create configurations by inheriting from
-   `Interfaces/IPasswordHasher.cs`
-
-   ```cs
-   using System.Security.Cryptography;
-   using System.Text;
-   using Konscious.Security.Cryptography;
-   using WalletApi.Interfaces;
-
-   class PasswordHasher : IPasswordHasher
-   {
-   }
-   ```
-
-5. **Run the database migrations (if applicable):**
-
-   ```bash
-   dotnet ef database update
-   ```
-
-6. **Start the server:**
-
-   ```bash
-   dotnet watch run
-   ```
-
-7. Access the API at:
-   ```
-   http://localhost:5236 (or the port configured in Properties/launchSettings.json)
+   http://localhost:5236 (or the port configured in .env)
    ```
 
 ## 🧪 API Endpoints
@@ -113,6 +87,7 @@ Here are the available routes and their main functionalities:
 - **SQL Server**: Relational database.
 - **JWT**: For secure authentication.
 - **Argon2**: For secure password hashing.
+- **Docker**: For containerization and application deployment.
 
 ## 📂 Project Structure
 
@@ -120,6 +95,7 @@ Here are the available routes and their main functionalities:
 src/
 ├── Controllers/        # Controllers for the API routes
 ├── Data/               # Database context
+├── docker/             # docker/.sh file
 ├── Dtos/               # Data transfer objects
 ├── Enums/              # Enum definitions
 ├── Interfaces/         # Contracts for abstractions

@@ -20,32 +20,6 @@ namespace WalletApi.Controllers
         {
             _accountRepository = accountRepository;
         }
-        /*
-                [HttpGet("getall")]
-                public async Task<IActionResult> GetAll()
-                {
-                    return Ok(await _accountRepository.GetAllAsync());
-                }
-
-                [HttpGet("getid/{id}")]
-                public async Task<IActionResult> GetById([FromRoute] string id)
-                {
-                    return Ok(await _accountRepository.GetByIdDtoAsync(id));
-                }
-
-                [HttpGet("getAllInId/{id}")]
-                public async Task<IActionResult> GetAllInById([FromRoute] string id)
-                {
-                    var x = await _accountRepository.GetAllInAsync(id);
-                    return Ok(x.Select(x => x.ToTransactionDto()));
-                }
-                [HttpGet("getAllOutId/{id}")]
-                public async Task<IActionResult> GetAllOutById([FromRoute] string id)
-                {
-                    var x = await _accountRepository.GetAllOutAsync(id);
-                    return Ok(x.Select(x => x.ToTransactionDto()));
-                }
-        */
         [HttpGet("balance/")]
         [Authorize]
         public async Task<IActionResult> Balance([FromQuery] string id, [FromQuery] string token)

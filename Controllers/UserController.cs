@@ -29,19 +29,6 @@ namespace WalletApi.Controllers
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
         }
-        /*
-                [HttpGet("getall")]
-                public async Task<IActionResult> GetAll()
-                {
-                    return Ok(await _userRepository.GetAllAsyncDto());
-                }
-
-                [HttpGet("getid/{id}")]
-                public async Task<IActionResult> GetById([FromRoute] string id)
-                {
-                    return Ok(await _userRepository.GetByIdDtoAsync(id));
-                }
-        */
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromQuery] CreateUserDto createUserDto)
         {

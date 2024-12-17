@@ -1,15 +1,13 @@
-version: '3.8'
-
 services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_PID=${MSSQL_PID}
-      - SA_PASSWORD=${SA_PASSWORD}
+      - MSSQL_PID=${DOCKER_MSSQL_PID}
+      - SA_PASSWORD=${DOCKER_SA_PASSWORD}
       - MSSQL_ENABLE_TLS=false
     ports:
-      - "1433:1433"
+      - "${DOCKER_MSQL_PORT}"
     volumes:
       - mssql_data:/var/opt/mssql/data
       - mssql_log:/var/opt/mssql/log
@@ -21,17 +19,26 @@ services:
   aspnetcore:
     build: .
     ports:
-      - "5236:5236"
+      - "${DOCKER_ASP_NET_CORE_PORT}"
     depends_on:
       - mssql
     networks:
       - app_network
     environment:
       - ASPNETCORE_URLS=${URLS}
-      - Jwt__SigninKey=${SIGNIN_KEY}
       - ConnectionStrings__DefaultConnection=${DEFAULT_CONNECTION}
+      - Logging__LogLevel__Default=${LOGGING_LOG_LEVEL_DEFAULT}
+      - Logging__LogLevel__Microsoft.AspNetCore=${LOGGING_LOG_LEVEL_MICROSOFT_ASP_NET_CORE}
+      - AllowedHosts=${ALLOWED_HOSTS}
       - Jwt__Issuer=${ISSUER}
       - Jwt__Audience=${AUDIENCE}
+      - Jwt__SigninKey=${SIGNIN_KEY}
+      - PasswordHasherSettings__SaltSize=${SALT_SIZE}
+      - PasswordHasherSettings__KeySize=${KEY_SIZE}
+      - PasswordHasherSettings__MemorySize=${MEMORY_SIZE}
+      - PasswordHasherSettings__Iterations=${ITERATIONS}
+      - PasswordHasherSettings__DegreeOfParallelism=${DEGREE_OF_PARALLELISM}
+      - PasswordHasherSettings__Delimiter=${DELIMITER}
     entrypoint: ["/init-db.sh"]
 
 volumes:

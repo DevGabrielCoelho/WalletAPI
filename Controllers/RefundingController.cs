@@ -25,19 +25,6 @@ namespace WalletApi.Controllers
             _transactionRepository = transactionRepository;
             _refundingRepository = refundingRepository;
         }
-        /*
-                [HttpGet("getall")]
-                public async Task<IActionResult> GetAll()
-                {
-                    return Ok(await _refundingRepository.GetAllDtoAsync());
-                }
-
-                [HttpGet("getid/{id}")]
-                public async Task<IActionResult> GetById([FromRoute] string id)
-                {
-                    return Ok(await _refundingRepository.GetByIdDtoAsync(id));
-                }
-        */
         [HttpPost("refound/")]
         [Authorize]
         public async Task<IActionResult> Refound([FromQuery] string transactionId, [FromQuery] string createdBy, [FromQuery] string token)
@@ -109,12 +96,5 @@ namespace WalletApi.Controllers
 
             return Ok(refunding.ToRefundingDto());
         }
-        /*
-                [HttpGet("tranferById/{id}")]
-                public async Task<IActionResult> GetTransferByRefundingId([FromRoute]string id){
-                    var x = await _refundingRepository.GetTransferByRefundingIdAsync(id);
-                    return Ok(x);
-                }
-        */
     }
 }
