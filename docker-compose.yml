@@ -40,11 +40,15 @@ services:
       - PasswordHasherSettings__DegreeOfParallelism=${DEGREE_OF_PARALLELISM}
       - PasswordHasherSettings__Delimiter=${DELIMITER}
     entrypoint: ["/init-db.sh"]
+    volumes:
+      - aspnetcore_flag_file:/app/flag_file
+
 
 volumes:
   mssql_data:
   mssql_log:
   mssql_secrets:
+  aspnetcore_flag_file:
 
 networks:
   app_network:

@@ -12,7 +12,7 @@ if [ -f /app/.env ]; then
     done < /app/.env
 fi
 
-FLAG_FILE="/app/migrations_done.flag"
+FLAG_FILE="/app/flag_file/migrations_done.flag"
 
 echo "Aguardando SQL Server iniciar..."
 
@@ -31,11 +31,17 @@ if [ ! -f "$FLAG_FILE" ]; then
     dotnet ef database update
 
     touch "$FLAG_FILE"
+    
+    echo "Migrações realizadas em $(date)" >> "$FLAG_FILE"
 
     echo "Migrações concluídas!"
 else
     echo "As migrações já foram realizadas anteriormente."
+    echo "Tentativa de migração em $(date) (já realizado)" >> "$FLAG_FILE"
 fi
 
 echo "Iniciando o aplicativo .NET..."
+
+rm /app/.env
+
 dotnet /app/publish/WalletApi.dll
